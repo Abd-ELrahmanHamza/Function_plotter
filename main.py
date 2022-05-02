@@ -1,6 +1,12 @@
 # import tkinter
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+import numpy as np
+import sympy as sp
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 
 fontFamily = "Times"
 
@@ -37,11 +43,47 @@ def verticalSeparator(root):
     ttk.Separator(root, orient='vertical').pack(side=tk.LEFT, fill=tk.Y)
 
 
+def stringToFunction(str):
+    allowedChars = ['X', 'x', '*', '/', '-', '+', '^']
+    replacements = {
+        '^': '**',
+        'x':'sp.symbols(\'x\')',
+        'X':'sp.symbols(\'x\')'
+    }
+    for char in str:
+        if ((not char.isnumeric()) and (char not in allowedChars)):
+            messagebox.showwarning("showwarning",
+                                   "Function is Should contain only \'X\' or \'x\' or \'+\' or \'-\' or \'*\' or \'/\' or \'^\'")
+            return
+    for old, new in replacements.items():
+        str = str.replace(old, new)
+    return eval(str)
+
+
+def plot(function, maxXval, minXval):
+    if (len(function) == 0):
+        messagebox.showwarning("showwarning", "Function is missing")
+        return
+
+    try:
+        maxXval = int(maxXval)
+    except:
+        messagebox.showwarning("showwarning", "Max X is missing")
+        return
+    try:
+        minXval = int(minXval)
+    except:
+        messagebox.showwarning("showwarning", "Min X is missing")
+        return
+    print(function, maxXval, minXval)
+    # print(stringToFunction(function))
+    return sp.plot(stringToFunction(function), minX=minXval, maxX=maxXval)
+
+
 def inputData(frame):
     frampady = 25
     padding = 20
     entryW = 30
-    entryH = 20
     lblW = 12
     lblFontSize = 16
     titleFrame = tk.Frame(frame)
@@ -73,13 +115,16 @@ def inputData(frame):
     minXEnry = tk.Entry(minFrame, width=entryW, font=(fontFamily, lblFontSize))
     minXEnry.pack(side=tk.RIGHT, padx=padding)
 
+    def helloCallBack():
+        plot(funEnry.get(), maxXEnry.get(), minXEnry.get())
+
     submitFrame = tk.Frame(frame)
     submitFrame.pack(pady=frampady)
-    btn = tk.Button(submitFrame, text="Plot", command=helloCallBack,width = 10,height = 20,font=(fontFamily, lblFontSize+2),background = "green",fg="white")
+    btn = tk.Button(submitFrame, text="Plot", command=helloCallBack, width=10, height=20,
+                    font=(fontFamily, lblFontSize + 2), background="green", fg="white")
     btn.pack()
 
-def helloCallBack():
-    print("Hello world")
+
 def plotGraph(frame):
     titleFrame = tk.Frame(frame)
     titleFrame.pack(pady=20)
@@ -115,4 +160,5 @@ if __name__ == '__main__':
 
     hozizontalSeparator(root)
     about(root)
+
     root.mainloop()
