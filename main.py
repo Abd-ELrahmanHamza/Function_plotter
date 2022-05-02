@@ -7,7 +7,6 @@ import sympy as sp
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
 fontFamily = "Times"
 
 
@@ -47,8 +46,8 @@ def stringToFunction(str):
     allowedChars = ['X', 'x', '*', '/', '-', '+', '^']
     replacements = {
         '^': '**',
-        'x':'sp.symbols(\'x\')',
-        'X':'sp.symbols(\'x\')'
+        'x': 'sp.symbols(\'x\')',
+        'X': 'sp.symbols(\'x\')'
     }
     for char in str:
         if ((not char.isnumeric()) and (char not in allowedChars)):
@@ -60,7 +59,7 @@ def stringToFunction(str):
     return eval(str)
 
 
-def plot(function, maxXval, minXval):
+def plot(function, maxXval, minXval, frame):
     if (len(function) == 0):
         messagebox.showwarning("showwarning", "Function is missing")
         return
@@ -77,10 +76,15 @@ def plot(function, maxXval, minXval):
         return
     print(function, maxXval, minXval)
     # print(stringToFunction(function))
-    return sp.plot(stringToFunction(function), minX=minXval, maxX=maxXval)
+    # hp = sp.plot(stringToFunction(function), minX=minXval, maxX=maxXval)
+    hp = sp.plot_implicit(sp.Eq(stringToFunction(function), sp.symbols('y')), (sp.symbols('x'), minXval, maxXval))
+    fig = hp._backend.fig
+    canvas = FigureCanvasTkAgg(fig, master=frame)
+    canvas.get_tk_widget().pack()
+    canvas.draw()
 
 
-def inputData(frame):
+def inputData(frame, plotFrame):
     frampady = 25
     padding = 20
     entryW = 30
@@ -116,7 +120,7 @@ def inputData(frame):
     minXEnry.pack(side=tk.RIGHT, padx=padding)
 
     def helloCallBack():
-        plot(funEnry.get(), maxXEnry.get(), minXEnry.get())
+        plot(funEnry.get(), maxXEnry.get(), minXEnry.get(), plotFrame)
 
     submitFrame = tk.Frame(frame)
     submitFrame.pack(pady=frampady)
@@ -145,12 +149,15 @@ def body(root):
     graphFrame.pack(side=tk.RIGHT)
     graphFrame.pack_propagate(0)
 
-    inputData(inputDataFrame)
+    inputData(inputDataFrame, graphFrame)
     plotGraph(graphFrame)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    # x, y = sp.symbols("x y")
+    # hp = sp.plot_implicit(sp.Eq(x ** 2 + y ** 2, 4), (x, -3, 3), (y, -3, 3))
+    # fig = hp._backend.fig
     root = tk.Tk(className="Function Plotter")
     root.geometry("800x700")
     title(root)
@@ -160,5 +167,7 @@ if __name__ == '__main__':
 
     hozizontalSeparator(root)
     about(root)
-
+    # canvas = FigureCanvasTkAgg(fig, master=root)
+    # canvas.get_tk_widget().pack()
+    # canvas.draw()
     root.mainloop()
