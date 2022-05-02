@@ -6,11 +6,10 @@ import numpy as np
 import sympy as sp
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import math
 fontFamily = "Times"
 oldCanvas = -1
 
-# TODO: Title of the window
 def title(root):
     titleFrame = tk.Frame(root)
     titleFrame.pack(side=tk.TOP, pady=30)
@@ -19,7 +18,6 @@ def title(root):
     title.pack(fill=tk.X)
 
 
-# TODO: About section contains the information of valid input data
 def about(root):
     # frame of about section
 
@@ -28,9 +26,9 @@ def about(root):
 
     titleAbout = tk.Label(aboutFrame, text="About the input data", font=(fontFamily, 20, "bold"), fg="green")
     titleAbout.pack(fill=tk.X, pady=10)
-    txt1 = "* The function should contain: numbers, X (variable), + - / * ^.\n\n"
+    txt1 = "* The function should contain: numbers or X (variable) or + or - or / or * or ^\n\n"
     txt2 = "* Min and Max values of X must be numbers."
-    infoAbout = tk.Label(aboutFrame, text=txt1 + txt2, font=(fontFamily, 15), fg="black")
+    infoAbout = tk.Label(aboutFrame, text=txt1 + txt2, font=(fontFamily, 15), fg="maroon")
     infoAbout.pack(side=tk.LEFT)
 
 
@@ -62,22 +60,28 @@ def stringToFunction(str):
 def plot(function, maxXval, minXval, frame):
     if (len(function) == 0):
         messagebox.showwarning("showwarning", "Function is missing")
-        return
+        return -1
 
     try:
         maxXval = int(maxXval)
     except:
         messagebox.showwarning("showwarning", "Max X is missing")
-        return
+        return -1
     try:
         minXval = int(minXval)
     except:
         messagebox.showwarning("showwarning", "Min X is missing")
-        return
+        return -1
     print(function, maxXval, minXval)
     # print(stringToFunction(function))
     # hp = sp.plot(stringToFunction(function), minX=minXval, maxX=maxXval)
-    hp = sp.plot_implicit(sp.Eq(stringToFunction(function), sp.symbols('y')), (sp.symbols('x'), minXval, maxXval))
+    equation = stringToFunction(function)
+    maxYval = equation.subs(sp.symbols('x'),maxXval)
+    minYval = equation.subs(sp.symbols('x'),minXval)
+    if(maxYval==minYval):
+        minYval = -10
+    hp = sp.plot_implicit(sp.Eq(equation, sp.symbols('y')), (sp.symbols('x'), minXval, maxXval),(sp.symbols('y'), minYval, maxYval))
+    # hp = sp.plot_implicit(sp.Eq(equation, sp.symbols('y')), (sp.symbols('x'), minXval, maxXval))
     fig = hp._backend.fig
     canvas = FigureCanvasTkAgg(fig, master=frame)
     canvas.get_tk_widget().pack(side = tk.BOTTOM)
@@ -157,11 +161,7 @@ def body(root):
     plotGraph(graphFrame)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # x, y = sp.symbols("x y")
-    # hp = sp.plot_implicit(sp.Eq(x ** 2 + y ** 2, 4), (x, -3, 3), (y, -3, 3))
-    # fig = hp._backend.fig
     root = tk.Tk(className="Function Plotter")
     root.geometry("800x700")
     title(root)
@@ -171,7 +171,4 @@ if __name__ == '__main__':
 
     hozizontalSeparator(root)
     about(root)
-    # canvas = FigureCanvasTkAgg(fig, master=root)
-    # canvas.get_tk_widget().pack()
-    # canvas.draw()
     root.mainloop()
