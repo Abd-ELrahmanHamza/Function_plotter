@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 fontFamily = "Times"
-
+oldCanvas = -1
 
 # TODO: Title of the window
 def title(root):
@@ -80,8 +80,9 @@ def plot(function, maxXval, minXval, frame):
     hp = sp.plot_implicit(sp.Eq(stringToFunction(function), sp.symbols('y')), (sp.symbols('x'), minXval, maxXval))
     fig = hp._backend.fig
     canvas = FigureCanvasTkAgg(fig, master=frame)
-    canvas.get_tk_widget().pack()
+    canvas.get_tk_widget().pack(side = tk.BOTTOM)
     canvas.draw()
+    return canvas
 
 
 def inputData(frame, plotFrame):
@@ -120,7 +121,10 @@ def inputData(frame, plotFrame):
     minXEnry.pack(side=tk.RIGHT, padx=padding)
 
     def helloCallBack():
-        plot(funEnry.get(), maxXEnry.get(), minXEnry.get(), plotFrame)
+        global oldCanvas
+        if(oldCanvas != -1):
+            oldCanvas.get_tk_widget().destroy()
+        oldCanvas = plot(funEnry.get(), maxXEnry.get(), minXEnry.get(), plotFrame)
 
     submitFrame = tk.Frame(frame)
     submitFrame.pack(pady=frampady)
