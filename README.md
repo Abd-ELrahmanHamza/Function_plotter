@@ -1,4 +1,18 @@
 # Functio  Plotter
+<div align="center">
+
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+
+</div>
+<div align="center">
+
+[![contributors](https://img.shields.io/github/contributors/Abd-ELrahmanHamza/Function_plotter)](https://github.com/Abd-ELrahmanHamza/Function_plotter/contributors)
+[![license](https://img.shields.io/pypi/l/ansicolortags.svg)](LICENSE)
+[![forks](https://img.shields.io/github/forks/Abd-ELrahmanHamza/Function_plotter)](https://github.com/Abd-ELrahmanHamza/Function_plotter/network)
+[![stars](https://img.shields.io/github/stars/Abd-ELrahmanHamza/Function_plotter)](https://github.com/Abd-ELrahmanHamza/Function_plotter/stargazers)
+[![issues](https://img.shields.io/github/issues/Abd-ELrahmanHamza/Function_plotter)](https://github.com/Abd-ELrahmanHamza/Function_plotter/issues)
+
+</div>
 
 GUI program that plots arbitrary user-entered function 
 
