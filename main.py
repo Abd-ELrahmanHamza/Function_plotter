@@ -63,15 +63,19 @@ def plot(function, maxXval, minXval, frame):
         return -1
 
     try:
-        maxXval = int(maxXval)
+        maxXval = float(maxXval)
     except:
         messagebox.showwarning("showwarning", "Max X is missing")
         return -1
     try:
-        minXval = int(minXval)
+        minXval = float(minXval)
     except:
         messagebox.showwarning("showwarning", "Min X is missing")
         return -1
+
+    if minXval>= maxXval:
+        messagebox.showwarning("showwarning", "Min X Must be less than Max X")
+        return
     print(function, maxXval, minXval)
     # print(stringToFunction(function))
     # hp = sp.plot(stringToFunction(function), minX=minXval, maxX=maxXval)
